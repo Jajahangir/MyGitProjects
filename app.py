@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>All is going well!</h1>"
+    return "<h1>All is going well!!!!!</h1>"
 
 if __name__ == '__main__':
     # Настройки портов важны для облака, берем порт из окружения или ставим 5000 по дефолту
