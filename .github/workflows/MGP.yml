@@ -1,0 +1,23 @@
+name: Learning Pipline From Scratch
+
+on: [pull_request]
+
+jobs:
+
+  build-and-test:
+
+  runs-on: ubuntu-latest
+
+  steps:
+  - name: First step - say hello
+    run: echo "Hello my boss, the robot is running to check code"
+
+  - name: Second step - Checkout the installed utils
+    run: |
+    echo "Which version of git is installed here?"
+    git --version
+    echo "Which ver of python?"
+    python3 --version
+
+  - name: Third step - simulation of launching
+    run: echo "Checking all packages... All completed!"
