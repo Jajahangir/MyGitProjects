@@ -1,15 +1,37 @@
-on: [push]
+name: CI/CD Flask Deployment
+
+# Пайплайн будет срабатывать при каждом push в ветку main
+on:
+  push:
+    branches: [ main ]
 
 jobs:
-  say-hello:
+  # 1. Этап проверки (Continuous Integration)
+  test-code:
     runs-on: ubuntu-latest
     steps:
-      - name: My First Command
-        run: echo "Привет! Твой первый pipeline успешно сработал!"
+      - name: Скачиваем код из репозитория
+        uses: actions/checkout@v4
 
-      - name: Print Server Info
+      - name: Настраиваем Python на виртуалке
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Устанавливаем зависимости для проверки
+        run: pip install -r requirements.txt
+
+      - name: Проверяем Python-код на синтаксические ошибки
+        run: python -m py_compile app.py
+
+  # 2. Этап доставки (Continuous Deployment)
+  deploy-to-render:
+    runs-on: ubuntu-latest
+    needs: test-code # Запустится ТОЛЬКО если шаг с тестом прошел успешно!
+    
+    steps:
+      - name: Активируем Deploy Hook в Render
+        # Команда curl делает запрос по нашей секретной ссылке из настроек гитхаба
         run: |
-          echo "Текущее время на сервере:"
-          date
-          echo "Кто я в этой системе?"
-          whoami
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Запрос на деплой успешно отправлен в Render!"
